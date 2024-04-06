@@ -1,0 +1,32 @@
+,Unnamed: 0_level_0,Unnamed: 1_level_0,Unnamed: 2_level_0,Unnamed: 3_level_0,Unnamed: 4_level_0,Tackles,Tackles,Tackles,Tackles,Tackles,Challenges,Challenges,Challenges,Challenges,Blocks,Blocks,Blocks,Unnamed: 17_level_0,Unnamed: 18_level_0,Unnamed: 19_level_0,Unnamed: 20_level_0,Unnamed: 21_level_0
+,Player,Nation,Pos,Age,90s,Tkl,TklW,Def 3rd,Mid 3rd,Att 3rd,Tkl,Att,Tkl%,Lost,Blocks,Sh,Pass,Int,Tkl+Int,Clr,Err,Matches
+0,David de Gea,es ESP,GK,31,58.3,0.0,0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,2,2,22.0,5.0,Matches
+1,Bruno Fernandes,pt POR,"MF,FW",27,57.3,83.0,64,31.0,31.0,21.0,37.0,99.0,37.4,62.0,52.0,5.0,47.0,36,115,53.0,1.0,Matches
+2,Marcus Rashford,eng ENG,FW,24,47.6,26.0,20,9.0,11.0,6.0,11.0,30.0,36.7,19.0,40.0,4.0,36.0,8,33,15.0,0.0,Matches
+3,Casemiro,br BRA,MF,30,43.3,121.0,76,62.0,47.0,12.0,61.0,132.0,46.2,71.0,86.0,22.0,64.0,65,172,86.0,0.0,Matches
+4,Luke Shaw,eng ENG,DF,27,40.5,65.0,48,34.0,27.0,4.0,36.0,54.0,66.7,18.0,56.0,19.0,37.0,52,107,64.0,2.0,Matches
+5,Lisandro Martínez,ar ARG,DF,24,37.9,80.0,53,56.0,21.0,3.0,49.0,65.0,75.4,16.0,60.0,32.0,28.0,50,125,133.0,0.0,Matches
+6,Diogo Dalot,pt POR,DF,23,36.0,72.0,53,51.0,20.0,1.0,43.0,55.0,78.2,12.0,34.0,9.0,25.0,50,118,60.0,2.0,Matches
+7,Antony,br BRA,FW,22,34.4,32.0,22,14.0,14.0,4.0,9.0,36.0,25.0,27.0,26.0,0.0,26.0,16,46,11.0,0.0,Matches
+8,Christian Eriksen,dk DEN,MF,30,34.0,27.0,24,13.0,9.0,5.0,13.0,38.0,34.2,25.0,26.0,9.0,17.0,16,41,22.0,1.0,Matches
+9,Tyrell Malacia,nl NED,DF,22,29.9,69.0,70,46.0,17.0,6.0,27.0,46.0,58.7,19.0,25.0,6.0,19.0,41,102,57.0,1.0,Matches
+10,Raphaël Varane,fr FRA,DF,29,29.6,27.0,14,20.0,7.0,0.0,8.0,20.0,40.0,12.0,27.0,17.0,10.0,17,42,111.0,0.0,Matches
+11,Aaron Wan-Bissaka,eng ENG,DF,24,28.5,48.0,39,23.0,22.0,3.0,26.0,30.0,86.7,4.0,30.0,9.0,21.0,39,78,55.0,1.0,Matches
+12,Victor Lindelöf,se SWE,DF,28,27.9,31.0,26,16.0,12.0,3.0,14.0,24.0,58.3,10.0,21.0,12.0,9.0,26,54,80.0,1.0,Matches
+13,Jadon Sancho,eng ENG,"FW,MF",22,26.9,24.0,18,8.0,10.0,6.0,12.0,38.0,31.6,26.0,34.0,2.0,32.0,10,34,6.0,0.0,Matches
+14,Fred,br BRA,MF,29,25.5,69.0,44,33.0,27.0,9.0,23.0,61.0,37.7,38.0,50.0,3.0,47.0,42,94,23.0,1.0,Matches
+15,Scott McTominay,sct SCO,MF,25,19.0,38.0,28,18.0,14.0,6.0,16.0,28.0,57.1,12.0,17.0,6.0,11.0,17,52,45.0,2.0,Matches
+16,Wout Weghorst,nl NED,"FW,MF",29,18.6,17.0,12,7.0,5.0,5.0,4.0,16.0,25.0,12.0,15.0,5.0,10.0,10,26,14.0,0.0,Matches
+17,Harry Maguire,eng ENG,DF,29,17.9,13.0,12,10.0,2.0,1.0,5.0,6.0,83.3,1.0,21.0,13.0,8.0,23,30,52.0,1.0,Matches
+18,Anthony Martial,fr FRA,FW,26,16.0,5.0,5,0.0,2.0,3.0,1.0,4.0,25.0,3.0,11.0,2.0,9.0,2,6,5.0,0.0,Matches
+19,Alejandro Garnacho,ar ARG,"FW,MF",18,13.5,7.0,6,4.0,0.0,3.0,2.0,14.0,14.3,12.0,8.0,0.0,8.0,10,15,5.0,0.0,Matches
+20,Cristiano Ronaldo,pt POR,FW,37,11.7,3.0,3,1.0,1.0,1.0,1.0,3.0,33.3,2.0,1.0,0.0,1.0,1,4,10.0,0.0,Matches
+21,Marcel Sabitzer,at AUT,MF,28,11.6,15.0,11,3.0,10.0,2.0,2.0,13.0,15.4,11.0,6.0,2.0,4.0,11,23,16.0,0.0,Matches
+22,Anthony Elanga,se SWE,FW,20,8.0,6.0,2,0.0,4.0,2.0,2.0,5.0,40.0,3.0,6.0,0.0,6.0,3,9,5.0,0.0,Matches
+23,Donny van de Beek,nl NED,MF,25,3.3,1.0,1,0.0,1.0,0.0,0.0,1.0,0.0,1.0,3.0,1.0,2.0,1,2,1.0,0.0,Matches
+24,Facundo Pellistri,uy URU,"FW,MF",20,2.5,3.0,2,1.0,1.0,1.0,1.0,2.0,50.0,1.0,1.0,0.0,1.0,1,4,3.0,0.0,Matches
+25,Martin Dúbravka,sk SVK,GK,33,2.0,,0,,,,,,,,,,,0,0,,,Matches
+26,Tom Heaton,eng ENG,GK,36,2.0,,0,,,,,,,,,,,0,0,,,Matches
+27,Kobbie Mainoo,eng ENG,MF,17,1.0,0.0,1,0.0,0.0,0.0,0.0,0.0,,0.0,1.0,1.0,0.0,0,0,0.0,0.0,Matches
+28,Charlie McNeill,eng ENG,DF,18,0.1,0.0,0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0,0,0.0,0.0,Matches
+29,Brandon Williams,eng ENG,DF,21,0.1,,0,,,,,,,,,,,0,0,,,Matches
