@@ -1,0 +1,13 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div>
+    <h1>Data.head</h1>
+    <div id="chart_div1">
+        {% block chart_content1 %}
+            {{ chart_data|safe }}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
