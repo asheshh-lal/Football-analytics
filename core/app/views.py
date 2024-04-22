@@ -36,9 +36,9 @@ def chart_1(request):
     df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
     df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
     p = Pitch(pitch_type='statsbomb')
-    # ## plot for ground pass
-    # fig = p.draw(figsize=(12, 8))
-    # ax.set_title("Total Pass Plot", fontsize=16)
+    ## plot for ground pass
+    fig = p.draw(figsize=(12, 8))
+    ax.set_title("Total Pass Plot", fontsize=16)
     # for index, row in df_pass.iterrows():
     #     if row['pass_outcome'] in ['Incomplete', 'Out']:       
     #         p.scatter(x=row['x_start'], y=row['y_start'], color='white',ax=ax)
@@ -49,8 +49,8 @@ def chart_1(request):
     #         p.scatter(x=row['x_end'], y=row['y_end'], color='green',ax=ax)
     #         p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax,linestyle='dotted')
     # chart1 = fig.to_html(full_html=False, include_plotlyjs=False)
-
-    return df_pass
+    chart = fig.to_html(full_html=False, include_plotlyjs=False)
+    return chart
 
 def render_combined_charts(request):
     df = chart_1(request)
