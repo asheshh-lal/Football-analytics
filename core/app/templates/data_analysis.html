@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
 {% block content %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="myfile">
-    <button type="submit">Upload and analyze</button>
-  </form>
+    <h1>Data Analysis</h1>
+    
+    {% if error_message %}
+        <p>Error: {{ error_message }}</p>
+    {% endif %}
+    
+    {% if chart %}
+        <img src="data:image/png;base64,{{ chart }}" alt="Chart">
+    {% endif %}
 
-  {% if result_present %}
-      <p>Raw data, pandas' DataFrame rendered as HTML</p>
-      <p>{{ df|safe }}</p>
-
-  {% endif %}
-
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="myfile">
+        <button type="submit">Upload</button>
+    </form>
 {% endblock %}
+
