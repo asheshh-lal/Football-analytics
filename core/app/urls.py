@@ -19,5 +19,7 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path('', views.render_combined_charts, name='display_base'),
+    path('', views.home, name='home'),
+    path('data_analysis/', views.data_analysis, name='data_analysis'),
+    path('about/', views.about, name='about'),
 ]
