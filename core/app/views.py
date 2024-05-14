@@ -19,7 +19,7 @@ def about(request):
 
 
 def data_analysis(request):
-    if request.method == 'POST' and request.FILES['myfile']:
+    if request.method == 'POST' and request.FILES.get('myfile'):
         myfile = request.FILES['myfile']
 
         fs = FileSystemStorage()
@@ -27,7 +27,6 @@ def data_analysis(request):
 
         try:
             df = pd.read_csv(fs.open(filename))
-
             # Create a Pitch object
             p = Pitch(pitch_type='statsbomb')
 
@@ -54,3 +53,39 @@ def data_analysis(request):
 
     return render(request, 'data_analysis.html')
 
+def data_return(request):
+    if request.method == 'POST' and request.FILES.get('myfile'):
+        myfile = request.FILES['myfile']
+
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+
+        try:
+            df = pd.read_csv(fs.open(filename))
+            render_combined_charts(request, df)
+
+        except Exception as e:
+            # Delete the CSV file in case of an error
+            os.remove(fs.path(filename))
+            return render(request, 'data_analysis.html', {'error_message': f"Error: {str(e)}"})
+
+    return render(request, 'data_analysis.html')
+
+def plot_one(data):
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    ax.set_title("Total Pass Plot", fontsize=16)
+
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    return image_base64  # Return the base64 encoded image
+
+def render_combined_charts(request, data):
+    chart1 = plot_one(data)
+    context = {
+        'chart1': mark_safe(chart1)  # Assuming chart1 contains HTML-safe content
+    }
+    return render(request, 'data_analysis.html', context)
