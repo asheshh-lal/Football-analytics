@@ -7,8 +7,8 @@
         <p>Error: {{ error_message }}</p>
     {% endif %}
     
-    {% if chart %}
-        <img src="data:image/png;base64,{{ chart }}" alt="Chart">
+    {% if chart1 %}
+        <img src="data:image/png;base64,{{ chart1 }}" alt="Chart">
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">
@@ -17,4 +17,3 @@
         <button type="submit">Upload</button>
     </form>
 {% endblock %}
-
