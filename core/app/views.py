@@ -71,7 +71,7 @@ def data_return(request):
     return render(request, 'data_analysis.html')
 
 def plot_one(data):
-    fig = Figure(figsize=(12, 8))
+    fig = Figure(figsize=(8, 4))
     ax = fig.subplots()
     p = Pitch(pitch_type='statsbomb')
     p.draw(ax=ax)  
