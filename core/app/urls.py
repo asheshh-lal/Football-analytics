@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from . import views
+from . import heatmaps
 
 urlpatterns = [
     path('', views.data_return, name='data_analysis'),
     path('about/', views.about, name='about'),
+    path('heatmap/', heatmaps.data_return, name='heatmap'),
 ]
