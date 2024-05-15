@@ -1,16 +1,17 @@
-from django.shortcuts import render
-from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
-from django.template import loader
-from django.utils.safestring import mark_safe
-from mplsoccer import Pitch
+import os
 import pandas as pd
-import plotly.io as pio
-import plotly.graph_objects as go
 import io
 import base64
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render
+from django.utils.safestring import mark_safe
 from matplotlib.figure import Figure
-import os
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from mplsoccer.pitch import Pitch
+import plotly.io as pio
+import plotly.graph_objects as go
 
 
 def about(request):
@@ -56,36 +57,37 @@ def data_analysis(request):
 def data_return(request):
     if request.method == 'POST' and request.FILES.get('myfile'):
         myfile = request.FILES['myfile']
-
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
-
         try:
             df = pd.read_csv(fs.open(filename))
-            render_combined_charts(request, df)
+            return render_combined_charts(request, df)
 
         except Exception as e:
-            # Delete the CSV file in case of an error
-            os.remove(fs.path(filename))
             return render(request, 'data_analysis.html', {'error_message': f"Error: {str(e)}"})
 
+        finally:
+            os.remove(fs.path(filename))
     return render(request, 'data_analysis.html')
 
 def plot_one(data):
+    fig = Figure(figsize=(12, 8))
+    ax = fig.subplots()
     p = Pitch(pitch_type='statsbomb')
-    fig, ax = p.draw(figsize=(12, 8))
-    ax.set_title("Total Pass Plot", fontsize=16)
+    p.draw(ax=ax)  
 
+    ax.set_title("Total Pass Plot", fontsize=16)
     buffer = io.BytesIO()
     fig.savefig(buffer, format='png')
     buffer.seek(0)
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
-    return image_base64  # Return the base64 encoded image
+    plt.close(fig) 
+    return image_base64  
 
 def render_combined_charts(request, data):
     chart1 = plot_one(data)
     context = {
-        'chart1': mark_safe(chart1)  # Assuming chart1 contains HTML-safe content
+        'chart1': chart1 
     }
     return render(request, 'data_analysis.html', context)
