@@ -16,7 +16,7 @@
         nav {
             background-color: #333;
             color: #fff;
-            padding: 10px 0;
+            padding: 10px 100px;
         }
 
         nav ul {
@@ -28,6 +28,7 @@
         nav ul li {
             display: inline;
             margin-right: 20px;
+            padding: 5px;
         }
 
         nav ul li a {
@@ -42,6 +43,32 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #02540b;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form button:hover {
+            background-color: #013b06;
+        }
+        .heatmap-image {
+            margin-top: 20px;
+        }
+        .heatmap-image img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -49,6 +76,7 @@
     <nav>
         <ul>
             <li><a href="{% url 'data_analysis' %}">Data Analysis</a></li>
+            <li><a href="{% url 'heatmap' %}">Heatmap Analysis</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
         </ul>
     </nav>

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{ team_name }} Heatmap Analysis</h1>
+        <p>Teams: Hyderabad VS Kerala Blasters</p>
+        <div class="form">
+            <form method="POST">
+                {% csrf_token %}
+                <label for="team_name">Enter Team Name:</label>
+                <input type="text" id="team_name" name="team_name" value="{{ team_name }}" required>
+                <button type="submit">Generate Heatmap</button>
+            </form>
+        </div>
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+        <div class="heatmap-image">
+            {% if chart %}
+                <img src="data:image/png;base64,{{ chart }}" alt="Heatmap">
+            {% else %}
+                <p>No heatmap available. Please try generating one by submitting the form.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
