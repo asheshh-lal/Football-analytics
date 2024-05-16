@@ -35,9 +35,8 @@ def data_return(request):
             os.remove(fs.path(filename))
     return render(request, 'data_analysis.html')
 
-def pass_heat_one(data):
-    df_team_one = data[data['team'] == data['team'].unique()[0]]
-    df_pass = df_team_one[df_team_one['type'] == 'Pass']
+def extract_pass(data):
+    df_pass = data[data['type'] == 'Pass']
     df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
     df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
     df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
@@ -48,6 +47,11 @@ def pass_heat_one(data):
     df_pass['y_start'] = df_pass['location'].apply(lambda x: x[1])
     df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
     df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
+    return df_pass
+
+def pass_heat_one(data):
+    df_team_one = data[data['team'] == data['team'].unique()[0]]
+    df_pass = extract_pass(df_team_one)
 
     pitch = Pitch(line_zorder=2, line_color='black')
     fig, ax = pitch.grid(grid_height=0.9, title_height=0.06, axis=False,
@@ -69,17 +73,7 @@ def pass_heat_one(data):
 
 def pass_heat_two(data):
     df_team_two = data[data['team'] == data['team'].unique()[1]]
-    df_pass = df_team_two[df_team_two['type'] == 'Pass']
-    df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
-    df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
-    df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
-    df_pass = df_pass[['type', 'location', 'pass_end_location',
-                    'pass_outcome', 'pass_recipient', 'pass_type',
-                    'play_pattern', 'player', 'under_pressure']]
-    df_pass['x_start'] = df_pass['location'].apply(lambda x: x[0])
-    df_pass['y_start'] = df_pass['location'].apply(lambda x: x[1])
-    df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
-    df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
+    df_pass = extract_pass(df_team_two)
 
     pitch = Pitch(line_zorder=2, line_color='black')
     fig, ax = pitch.grid(grid_height=0.9, title_height=0.06, axis=False,
@@ -102,17 +96,8 @@ def pass_heat_two(data):
 
 def pass_network_one(data):
     df_team_one = data[data['team'] == data['team'].unique()[0]]
-    df_pass = df_team_one[df_team_one['type'] == 'Pass']
-    df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
-    df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
-    df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
-    df_pass = df_pass[['type', 'location', 'pass_end_location',
-                    'pass_outcome', 'pass_recipient', 'pass_type',
-                    'play_pattern', 'player', 'under_pressure']]
-    df_pass['x_start'] = df_pass['location'].apply(lambda x: x[0])
-    df_pass['y_start'] = df_pass['location'].apply(lambda x: x[1])
-    df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
-    df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
+    df_pass = extract_pass(df_team_one)
+    
     pass_recipient_data = df_pass[['player', 'pass_recipient', 'x_start', 'y_start', 'x_end', 'y_end']].reset_index().drop('index', axis=1)
     pass_recipient_data['player'] = pass_recipient_data['player'].apply(lambda x: x.split(" ")[1])
     pass_recipient_data['pass_recipient'] = pass_recipient_data['pass_recipient'].apply(lambda x: x.split(" ")[1] if not pd.isna(x) else x)
@@ -169,18 +154,9 @@ def pass_network_one(data):
     return image_base64
 
 def pass_network_two(data):
-    df_team_one = data[data['team'] == data['team'].unique()[1]]
-    df_pass = df_team_one[df_team_one['type'] == 'Pass']
-    df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
-    df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
-    df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
-    df_pass = df_pass[['type', 'location', 'pass_end_location',
-                    'pass_outcome', 'pass_recipient', 'pass_type',
-                    'play_pattern', 'player', 'under_pressure']]
-    df_pass['x_start'] = df_pass['location'].apply(lambda x: x[0])
-    df_pass['y_start'] = df_pass['location'].apply(lambda x: x[1])
-    df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
-    df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
+    df_team_two = data[data['team'] == data['team'].unique()[1]]
+    df_pass = extract_pass(df_team_two)
+
     pass_recipient_data = df_pass[['player', 'pass_recipient', 'x_start', 'y_start', 'x_end', 'y_end']].reset_index().drop('index', axis=1)
     pass_recipient_data['player'] = pass_recipient_data['player'].apply(lambda x: x.split(" ")[1])
     pass_recipient_data['pass_recipient'] = pass_recipient_data['pass_recipient'].apply(lambda x: x.split(" ")[1] if not pd.isna(x) else x)
