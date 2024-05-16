@@ -15,10 +15,12 @@ import plotly.graph_objects as go
 import ast  
 import numpy as np
 
+## to navigate to render page
 def about(request):
     print('About')
     return render(request, 'about.html')
 
+## function to get the data from the user and returns it
 def data_return(request):
     if request.method == 'POST' and request.FILES.get('myfile'):
         myfile = request.FILES['myfile']
@@ -35,6 +37,8 @@ def data_return(request):
             os.remove(fs.path(filename))
     return render(request, 'data_analysis.html')
 
+
+## function to extract pass action from the data
 def extract_pass(data):
     df_pass = data[data['type'] == 'Pass']
     df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
@@ -49,6 +53,7 @@ def extract_pass(data):
     df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
     return df_pass
 
+## function to plot pass heat map for first team
 def pass_heat_one(data):
     df_team_one = data[data['team'] == data['team'].unique()[0]]
     df_pass = extract_pass(df_team_one)
@@ -71,6 +76,7 @@ def pass_heat_one(data):
     plt.close(fig) 
     return image_base64
 
+## function to plot pass heat map for second team
 def pass_heat_two(data):
     df_team_two = data[data['team'] == data['team'].unique()[1]]
     df_pass = extract_pass(df_team_two)
@@ -94,6 +100,8 @@ def pass_heat_two(data):
     plt.close(fig) 
     return image_base64
 
+
+## function to plot pass network map for second team
 def pass_network_one(data):
     df_team_one = data[data['team'] == data['team'].unique()[0]]
     df_pass = extract_pass(df_team_one)
@@ -153,6 +161,8 @@ def pass_network_one(data):
     plt.close(fig) 
     return image_base64
 
+
+## function to plot pass network map for second team
 def pass_network_two(data):
     df_team_two = data[data['team'] == data['team'].unique()[1]]
     df_pass = extract_pass(df_team_two)
