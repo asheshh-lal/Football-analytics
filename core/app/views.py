@@ -41,7 +41,6 @@ def data_return(request):
 ## function to extract pass action from the data
 def extract_pass(data):
     df_pass = data[data['type'] == 'Pass']
-    df_pass.dropna(subset=['location', 'pass_end_location'], inplace=True)
     df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
     df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
     df_pass = df_pass[['type', 'location', 'pass_end_location',
@@ -52,6 +51,17 @@ def extract_pass(data):
     df_pass['x_end'] = df_pass['pass_end_location'].apply(lambda x: x[0])
     df_pass['y_end'] = df_pass['pass_end_location'].apply(lambda x: x[1])
     return df_pass
+
+def extract_shot(data):
+    df_shot = data[data['type'] == 'Shot']
+    df_shot['location'] = df_shot['location'].apply(ast.literal_eval)
+    df_shot['shot_end_location'] = df_shot['shot_end_location'].apply(ast.literal_eval)
+    df_shot = df_shot[['type', 'location', 'shot_end_location',
+                    'shot_outcome']]
+    df_shot[['x_start', 'y_start']] = df_shot['location'].apply(lambda x: pd.Series([x[0], x[1]]) if isinstance(x, list) and len(x) >= 2 else pd.Series([None, None]))
+    # Extract first and second values of each array in shot_end_location using lambda function
+    df_shot[['x_end', 'y_end']] = df_shot['shot_end_location'].apply(lambda x: pd.Series([x[0], x[1]]) if isinstance(x, list) and len(x) >= 2 else pd.Series([None, None]))
+    return df_shot
 
 ## function to plot pass heat map for first team
 def pass_heat_one(data):
@@ -66,7 +76,7 @@ def pass_heat_one(data):
     ax_cbar = fig.add_axes((1, 0.093, 0.03, 0.786))
     cbar = plt.colorbar(pcm, cax=ax_cbar)
 
-    fig.suptitle("Total Pass Plot for {}".format(data['team'].unique()[0]), fontsize=16)
+    fig.suptitle("Total Pass Heatmap for {}".format(data['team'].unique()[0]), fontsize=16)
     plt.show()
     
     buffer = io.BytesIO()
@@ -89,7 +99,7 @@ def pass_heat_two(data):
     ax_cbar = fig.add_axes((1, 0.093, 0.03, 0.786))
     cbar = plt.colorbar(pcm, cax=ax_cbar)
 
-    fig.suptitle("Total Pass Plot for {}".format(data['team'].unique()[1]), fontsize=16)
+    fig.suptitle("Total Pass Heatmap for {}".format(data['team'].unique()[1]), fontsize=16)
     plt.show()
     
     
@@ -152,7 +162,7 @@ def pass_network_one(data):
         pitch.lines(player1_x, player1_y, player2_x, player2_y,
                         alpha=1, lw=line_width, zorder=2, color="red", ax = ax["pitch"])
 
-    fig.suptitle("Total Pass Plot for {}".format(data['team'].unique()[0]), fontsize=16)
+    fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[0]), fontsize=16)
     plt.show()
     buffer = io.BytesIO()
     fig.savefig(buffer, format='png')
@@ -213,7 +223,7 @@ def pass_network_two(data):
         pitch.lines(player1_x, player1_y, player2_x, player2_y,
                         alpha=1, lw=line_width, zorder=2, color="blue", ax = ax["pitch"])
 
-    fig.suptitle("Total Pass Plot for {}".format(data['team'].unique()[1]), fontsize=16)
+    fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[1]), fontsize=16)
     plt.show()
     buffer = io.BytesIO()
     fig.savefig(buffer, format='png')
@@ -222,14 +232,228 @@ def pass_network_two(data):
     plt.close(fig) 
     return image_base64
 
+def pass_def_att_one(data):
+    df_team_one = data[data['team'] == data['team'].unique()[0]]
+    df_pass = extract_pass(df_team_one)
+    df_pass = df_pass[(df_pass['x_start'] < 40) & (df_pass['x_end'] > 80)]
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    ax.set_title("Passes from defensive 3rd to attacking 3rd", fontsize=16)
 
+    # Plot passes
+    for index, row in df_pass.iterrows():
+        if row['pass_outcome'] in ['Incomplete', 'Out']:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=300, color='red', ax=ax, marker='+')
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], color='green', ax=ax)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted')
+    
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig) 
+    return image_base64
 
+def pass_def_att_two(data):
+    df_team_two = data[data['team'] == data['team'].unique()[1]]
+    df_pass = extract_pass(df_team_two)
+    df_pass = df_pass[(df_pass['x_start'] < 40) & (df_pass['x_end'] > 80)]
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    ax.set_title("Passes from defensive 3rd to attacking 3rd", fontsize=16)
+
+    # Plot passes
+    for index, row in df_pass.iterrows():
+        if row['pass_outcome'] in ['Incomplete', 'Out']:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=300, color='red', ax=ax, marker='+')
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], color='green', ax=ax)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted')
+    
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig) 
+    return image_base64
+
+def pass_mid_att_one(data):
+    df_team_one = data[data['team'] == data['team'].unique()[0]]
+    df_pass = extract_pass(df_team_one)
+    df_pass = df_pass[(df_pass['x_start'] > 40) & (df_pass['x_end'] > 80) & (df_pass['x_start'] < 80)]
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    ax.set_title("Passes from midfield 3rd to attacking 3rd", fontsize=16)
+
+    # Plot passes
+    for index, row in df_pass.iterrows():
+        if row['pass_outcome'] in ['Incomplete', 'Out']:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=300, color='red', ax=ax, marker='+')
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], color='green', ax=ax)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted')
+    
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig) 
+    return image_base64
+
+def pass_mid_att_two(data):
+    df_team_two = data[data['team'] == data['team'].unique()[1]]
+    df_pass = extract_pass(df_team_two)
+    df_pass = df_pass[(df_pass['x_start'] > 40) & (df_pass['x_end'] > 80) & (df_pass['x_start'] < 80)]
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    ax.set_title("Passes from midfield 3rd to attacking 3rd", fontsize=16)
+
+    # Plot passes
+    for index, row in df_pass.iterrows():
+        if row['pass_outcome'] in ['Incomplete', 'Out']:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=300, color='red', ax=ax, marker='+')
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], color='green', ax=ax)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted')
+    
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig) 
+    return image_base64
+
+def shots_one(data):
+    df_shot_one = data[data['team'] == data['team'].unique()[0]]
+    df_shot = extract_shot(df_shot_one)
+
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[0]), fontsize=16)
+
+    # Plot shots
+    for index, row in df_shot.iterrows():
+        if row['shot_outcome'] in ['Saved', 'Blocked', 'Off T']:       
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=50, color='red', ax=ax, marker='+')  # Small marker size (s=50)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=100, color='green', ax=ax)  # Large marker size (s=200)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, comet=True)
+            
+    plt.show()  
+    # Save plot to buffer and encode as base64
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)  # Close the plot to free memory
+
+    return image_base64
+
+def shots_two(data):
+    df_shot_two = data[data['team'] == data['team'].unique()[1]]
+    df_shot = extract_shot(df_shot_two)
+
+    p = Pitch(pitch_type='statsbomb')
+    fig, ax = p.draw(figsize=(12, 8))
+    p.draw(ax=ax)  
+    fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[1]), fontsize=16)
+
+    # Plot shots
+    for index, row in df_shot.iterrows():
+        if row['shot_outcome'] in ['Saved', 'Blocked', 'Off T']:       
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=50, color='red', ax=ax, marker='+')  # Small marker size (s=50)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+        else:
+            p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+            p.scatter(x=row['x_end'], y=row['y_end'], s=100, color='green', ax=ax)  # Large marker size (s=200)
+            p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, comet=True)
+            
+    plt.show()  
+    # Save plot to buffer and encode as base64
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)  # Close the plot to free memory
+
+    return image_base64
+
+# def def_one(data):
+#     def_one = data[data['team'] == data['team'].unique()[0]]
+#     defensive_actions = ['Pressure', 'Foul Committed', 'Foul Won', 'Ball Recovery', 'Block', 'Miscontrol', 'Clearance', 'Duel', 'Interception', 'Shield']
+#     df_def_action = def_one[def_one['type'].isin(defensive_actions)]
+#     df_def_action['player'] = df_def_action['player'].apply(lambda x: x.split(" ")[-1])
+#     df_def_action[['x_start','y_start']] = pd.DataFrame(df_def_action.location.tolist(),index=df_def_action.index)
+#     scatter_df = pd.DataFrame()
+#     for i, name in enumerate(df_def_action["player"].unique()):
+#         x = df_def_action.loc[df_def_action["player"] == name]["x_start"].to_numpy()
+#         y = df_def_action.loc[df_def_action["player"] == name]["y_start"].to_numpy()
+#         scatter_df.at[i, "player"] = name
+#         # make sure that x and y location for each circle representing the player is the average of passes and receptions
+#         scatter_df.at[i, "x"] = np.mean(x)
+#         scatter_df.at[i, "y"] = np.mean(y)
+
+#     scatter_df.head()
+
+#     p = Pitch(pitch_type='statsbomb')
+#     fig, ax = p.draw(figsize=(12, 8))
+#     p.draw(ax=ax)  
+#     fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[1]), fontsize=16)
+
+#     # Plot shots
+#     for index, row in df_shot.iterrows():
+#         if row['shot_outcome'] in ['Saved', 'Blocked', 'Off T']:       
+#             p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+#             p.scatter(x=row['x_end'], y=row['y_end'], s=50, color='red', ax=ax, marker='+')  # Small marker size (s=50)
+#             p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, linestyle='dotted') 
+#         else:
+#             p.scatter(x=row['x_start'], y=row['y_start'], color='white', ax=ax)
+#             p.scatter(x=row['x_end'], y=row['y_end'], s=100, color='green', ax=ax)  # Large marker size (s=200)
+#             p.lines(xstart=row['x_start'], xend=row['x_end'], ystart=row['y_start'], yend=row['y_end'], ax=ax, comet=True)
+            
+#     plt.show()  
+#     # Save plot to buffer and encode as base64
+#     buffer = io.BytesIO()
+#     fig.savefig(buffer, format='png')
+#     buffer.seek(0)
+#     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+#     plt.close(fig)  # Close the plot to free memory
+
+#     return image_base64
 
 def render_combined_charts(request, data):
     chart1 = pass_heat_one(data)
     chart2 = pass_heat_two(data)
     chart3 = pass_network_one(data)
     chart4 = pass_network_two(data)
+    chart5 = pass_def_att_one(data)
+    chart6 = pass_def_att_two(data)
+    chart7 = pass_mid_att_one(data)
+    chart8 = pass_mid_att_two(data)
+    chart9 = shots_one(data)
+    chart10 = shots_two(data)
 
 
     context = {
@@ -237,7 +461,12 @@ def render_combined_charts(request, data):
         'chart2': chart2,
         'chart3': chart3, 
         'chart4': chart4,  
- 
+        'chart5': chart5, 
+        'chart6': chart6,
+        'chart7': chart7,
+        'chart8': chart8,
+        'chart9': chart9,  
+        'chart10': chart10,  
 
     }
     return render(request, 'data_analysis.html', context)
