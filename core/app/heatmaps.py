@@ -7,22 +7,22 @@ from mplsoccer import Pitch, Sbopen
 parser = Sbopen()
 
 competitions = parser.competition()
-competitions[competitions.competition_name == 'Indian Super league']
-parser.match(competition_id=1238, season_id=108)
-df, df_related, df_freeze, df_tactics = parser.event(3827767)
+competitions[competitions.competition_name == 'International - Fifa World Cup']
+parser.match(competition_id=43, season_id=106)
+df, df_related, df_freeze, df_tactics = parser.event(3869685)
 
 # Define the list of valid team names
-valid_team_names = ['Hyderabad','Kerala Blasters']
+valid_team_names = ['Argentina','France']
 
 def data_return(request):
     if request.method == "POST":
-        team_name = request.POST.get('team_name', 'Hyderabad')  
+        team_name = request.POST.get('team_name', 'Argentina')  
         if team_name in valid_team_names:
             return render_heatmaps(request, df, team_name)
         else:
             error_message = "Please enter a correct team name."
             return render(request, 'heatmap.html', {'team_name': team_name, 'error_message': error_message})
-    return render(request, 'heatmap.html', {'team_name': 'Hyderabad'})
+    return render(request, 'heatmap.html', {'team_name': 'Argentina'})
 
 def generate_player_heatmap_grid(df, team_name):
     team_passes = df[(df.type_name == 'Pass') & 
