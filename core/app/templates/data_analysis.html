@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>General Match Analysis</h1>
+    
+    {% if error_message %}
+        <p>Error: {{ error_message }}</p>
+    {% endif %}
+    <form class="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="myfile">
+        <button type="submit">Upload</button>
+    </form>
+
+    <div class="chart-container">
+        {% if chart1 %}
+            <img src="data:image/png;base64,{{ chart1 }}" alt="Chart 1" class="chart-image">
+        {% endif %}
+
+        {% if chart2 %}
+            <img src="data:image/png;base64,{{ chart2 }}" alt="Chart 2" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container">
+        {% if chart3 %}
+            <img src="data:image/png;base64,{{ chart3 }}" alt="Chart 3" class="chart-image">
+        {% endif %}
+        {% if chart4 %}
+            <img src="data:image/png;base64,{{ chart4 }}" alt="Chart 4" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container">
+        {% if chart5 %}
+            <img src="data:image/png;base64,{{ chart5 }}" alt="Chart 5" class="chart-image">
+        {% endif %}
+        {% if chart6 %}
+            <img src="data:image/png;base64,{{ chart6 }}" alt="Chart 6" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container">
+        {% if chart7 %}
+            <img src="data:image/png;base64,{{ chart7 }}" alt="Chart 7" class="chart-image">
+        {% endif %}
+        {% if chart8 %}
+            <img src="data:image/png;base64,{{ chart8 }}" alt="Chart 8" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container">
+        {% if chart9 %}
+            <img src="data:image/png;base64,{{ chart9 }}" alt="Chart 9" class="chart-image">
+        {% endif %}
+        {% if chart10 %}
+            <img src="data:image/png;base64,{{ chart10 }}" alt="Chart 10" class="chart-image">
+        {% endif %}
+    </div>
+    <div class="chart-container">
+        {% if chart11 %}
+            <img src="data:image/png;base64,{{ chart11 }}" alt="Chart 11" class="chart-image">
+        {% endif %}
+        {% if chart12 %}
+            <img src="data:image/png;base64,{{ chart12 }}" alt="Chart 12" class="chart-image">
+        {% endif %}
+    </div>
+
+    
+    <style>
+        .chart-container {
+            display: flex;
+            justify-content: space-between; /* Adjust alignment as needed */
+            margin-bottom: 20px; /* Optional: Add margin for spacing */
+        }
+
+        .chart-image {
+            max-width: 45%; /* Adjust width as needed */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
+{% endblock %}
