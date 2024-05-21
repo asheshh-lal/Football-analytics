@@ -7,6 +7,7 @@ contourpy==1.2.1
 cycler==0.12.1
 Django==5.0.4
 djangorestframework==3.15.1
+exceptiongroup==1.2.1
 fonttools==4.51.0
 idna==3.7
 inflect==7.2.0
@@ -18,6 +19,7 @@ mplsoccer==1.2.4
 numpy==1.26.4
 packaging==24.0
 pandas==2.2.2
+patsy==0.5.6
 pillow==10.3.0
 platformdirs==4.2.0
 plotly==5.21.0
@@ -33,10 +35,10 @@ six==1.16.0
 sqlparse==0.5.0
 statsbomb==0.3.0
 statsbombpy==1.13.0
+statsmodels==0.14.2
 tenacity==8.2.3
 typeguard==4.2.1
 typing_extensions==4.11.0
 tzdata==2024.1
 url-normalize==1.4.3
 urllib3==2.2.1
-debugpy==1.8.1
