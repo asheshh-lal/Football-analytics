@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Individual Player Analysis</h1>
+    
+    {% if error_message %}
+        <p>Error: {{ error_message }}</p>
+    {% endif %}
+    
+    <form class="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="csv_file">
+        <button type="submit">Upload</button>
+    </form>
+
+    <div class="chart-container-2">
+        {% if chart1 %}
+            <img src="data:image/png;base64,{{ chart1 }}" alt="Chart 1" class="chart-image">
+        {% endif %}
+    </div>
+    <div class="chart-container-2">
+        {% if chart2 %}
+            <img src="data:image/png;base64,{{ chart2 }}" alt="Chart 2" class="chart-image">
+        {% endif %}
+    </div>
+    <div class="chart-container-2">
+        {% if chart3 %}
+            <img src="data:image/png;base64,{{ chart3 }}" alt="Chart 3" class="chart-image">
+        {% endif %}
+    </div>
+    <div class="chart-container-2">
+        {% if chart4 %}
+            <img src="data:image/png;base64,{{ chart4 }}" alt="Chart 4" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container-2">
+        {% if chart5 %}
+            <img src="data:image/png;base64,{{ chart5 }}" alt="Chart 5" class="chart-image">
+        {% endif %}
+    </div>
+
+    <div class="chart-container-2">
+        {% if chart6 %}
+            <img src="data:image/png;base64,{{ chart6 }}" alt="Chart 6" class="chart-image">
+        {% endif %}
+    </div>
+    <div class="chart-container-2">
+        {% if chart7 %}
+            <img src="data:image/png;base64,{{ chart7 }}" alt="Chart 7" class="chart-image">
+        {% endif %}
+    </div>
+
+    <style>
+        .chart-container-2 {
+            display: flex;
+            justify-content: center; /* Center the chart horizontally */
+            align-items: center; /* Center the chart vertically */
+            height: 60vh; /* Adjust the overall height of the container */
+            gap: 10px; /* Reduce the space between charts */
+        }
+    
+        .chart-image {
+            max-width: 100%; /* Ensure the image scales properly */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
+    
+{% endblock %}
