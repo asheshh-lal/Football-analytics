@@ -14,6 +14,11 @@ import plotly.io as pio
 import plotly.graph_objects as go
 import ast  
 import numpy as np
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+import warnings
+pd.options.mode.chained_assignment = None
+warnings.filterwarnings('ignore')
 
 ## to navigate to render page
 def about(request):
@@ -240,7 +245,7 @@ def shots_one(data,i):
     p = Pitch(pitch_type='statsbomb')
     fig, ax = p.draw(figsize=(12, 8))
     p.draw(ax=ax)  
-    fig.suptitle("Total Pass Network for {}".format(data['team'].unique()[i]), fontsize=16)
+    fig.suptitle("Shots for {}".format(data['team'].unique()[i]), fontsize=16)
 
     # Plot shots
     for index, row in df_shot.iterrows():
@@ -311,6 +316,92 @@ def def_one(data, i):
 
     return image_base64
 
+def calculate_xG(sh, b, model_variables):
+    bsum = b[0]
+    for i, v in enumerate(model_variables):
+        bsum += b[i + 1] * sh[v]
+    xG = 1 / (1 + np.exp(-bsum))
+    return xG
+
+def xG_calc(data, i):
+    # Filter the data for the team at index i
+    df_team = data[data['team'] == data['team'].unique()[i]]
+    df_team = df_team[['team', 'type', 'minute', 'location', 'shot_end_location', 'shot_outcome']]
+    shots = df_team[df_team['type'] == 'Shot'].reset_index()
+    shots['location'] = shots['location'].apply(ast.literal_eval)
+
+    # Extract shot coordinates and convert to standard pitch coordinates
+    shots["X"] = shots["location"].apply(lambda loc: (120 - loc[0]) * 105 / 120)
+    shots["Y"] = shots["location"].apply(lambda loc: loc[1] * 68 / 100)
+    shots["C"] = shots["location"].apply(lambda loc: abs(loc[1] - 60) * 68 / 100)
+
+    # Calculate distance from goal
+    shots["Distance"] = np.sqrt(shots["X"]**2 + shots["C"]**2)
+
+    # Calculate angle to goal
+    shots["Angle"] = np.where(
+        np.arctan(7.32 * shots["X"] / (shots["X"]**2 + shots["C"]**2 - (7.32 / 2)**2)) > 0,
+        np.arctan(7.32 * shots["X"] / (shots["X"]**2 + shots["C"]**2 - (7.32 / 2)**2)),
+        np.arctan(7.32 * shots["X"] / (shots["X"]**2 + shots["C"]**2 - (7.32 / 2)**2)) + np.pi
+    )
+
+    # Determine if the shot was a goal
+    shots["Goal"] = shots["shot_outcome"].apply(lambda outcome: 1 if outcome == 'Goal' else 0).astype(object)
+    
+    # Creating extra variables
+    shots["X2"] = shots['X'] ** 2
+    shots["C2"] = shots['C'] ** 2
+    shots["AX"] = shots['Angle'] * shots['X']
+
+    # List the model variables
+    model_variables = ['Angle', 'Distance']
+    model = ' + '.join(model_variables)
+
+    # Fit the model
+    test_model = smf.glm(formula="Goal ~ " + model, data=shots, family=sm.families.Binomial()).fit()
+    # Print summary
+    b = test_model.params
+
+    # Add an xG to the dataframe
+    xG = shots.apply(calculate_xG, args=(b, model_variables), axis=1)
+    shots = shots.assign(xG=xG)
+    shots['cumulative_xG'] = shots['xG'].cumsum()
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    fig.patch.set_facecolor('white')  # Set background color to white
+    ax.patch.set_facecolor('white')   # Set axes background color to white
+
+    # Determine line color based on the value of i
+    line_color = 'red' if i == 0 else 'blue'
+
+    # Plot cumulative xG using a step plot with red or blue color
+    ax.step(x=shots['minute'], y=shots['cumulative_xG'], where='post', color=line_color)
+
+    # Customize the plot appearance
+    plt.xticks(color='black')  # Set x-axis ticks color to black
+    plt.yticks(color='black')  # Set y-axis ticks color to black
+    ax.spines['top'].set_color('black')
+    ax.spines['right'].set_color('black')
+    ax.spines['bottom'].set_color('black')
+    ax.spines['left'].set_color('black')
+    ax.tick_params(axis='x', colors='black')
+    ax.tick_params(axis='y', colors='black')
+
+    # Set labels and title with white color
+    ax.set_xlabel('Minute', color='black')
+    ax.set_ylabel('Cumulative xG', color='black')
+    ax.set_title('Cumulative xG Over Time', color='black')
+
+    # Save plot to buffer and encode as base64
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)  # Close the plot to free memory
+
+    return image_base64
+
+
 
 def render_combined_charts(request, data):
     chart1 = pass_heat_one(data,0)
@@ -325,6 +416,9 @@ def render_combined_charts(request, data):
     chart10 = shots_one(data,1)
     chart11 = def_one(data,0)
     chart12 = def_one(data,1)
+    chart13 = xG_calc(data,0)
+    chart14 = xG_calc(data,1)
+
 
     context = {
         'chart1': chart1,
@@ -339,5 +433,8 @@ def render_combined_charts(request, data):
         'chart10': chart10, 
         'chart11': chart11,  
         'chart12': chart12,  
+        'chart13': chart13,  
+        'chart14': chart14,  
+
     }
     return render(request, 'data_analysis.html', context)
