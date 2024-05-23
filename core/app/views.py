@@ -45,9 +45,15 @@ def data_return(request):
 
 ## function to extract pass action from the data
 def extract_pass(data):
+    # Function to safely parse the location fields
+    def parse_location(location):
+        if isinstance(location, str):
+            return ast.literal_eval(location)
+        return location
+
     df_pass = data[data['type'] == 'Pass']
-    df_pass['location'] = df_pass['location'].apply(ast.literal_eval)
-    df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(ast.literal_eval)
+    df_pass['location'] = df_pass['location'].apply(parse_location)
+    df_pass['pass_end_location'] = df_pass['pass_end_location'].apply(parse_location)
     df_pass = df_pass[['type', 'location', 'pass_end_location',
                     'pass_outcome', 'pass_recipient', 'pass_type',
                     'play_pattern', 'player', 'under_pressure']]
