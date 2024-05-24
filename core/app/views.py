@@ -322,6 +322,7 @@ def def_one(data, i):
 
     return image_base64
 
+## function to calculate xG using sigmoid function
 def calculate_xG(sh, b, model_variables):
     bsum = b[0]
     for i, v in enumerate(model_variables):
@@ -407,7 +408,39 @@ def xG_calc(data, i):
 
     return image_base64
 
+## function to plot the shots
+def pass_control(data, i):
+    # Select only the passes for the specified team
+    df_pass_count = data[(data['type'] == 'Pass') & (data['team'] == data['team'].unique()[i])]
+    df_pass_count = df_pass_count[['minute', 'type']]
 
+    # Add a new column 'count' with value 1 in all rows
+    df_pass_count['count'] = 1
+
+    # Calculate the cumulative sum of the 'count' column
+    df_pass_count['cumulative_count'] = df_pass_count['count'].cumsum()
+
+    # Plot a line graph
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    color = 'Red' if i == 0 else 'Blue'
+    
+    ax.plot(df_pass_count['minute'], df_pass_count['cumulative_count'], marker='o', linestyle='-', color=color)
+
+    # Add labels and title
+    ax.set_xlabel('Minute')
+    ax.set_ylabel('Cumulative Count of passes')
+    fig.suptitle("Pass control over the minute {}".format(data['team'].unique()[i]), fontsize=16)
+    ax.grid(True)
+
+    # Save plot to buffer and encode as base64
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)  # Close the plot to free memory
+
+    return image_base64
 
 def render_combined_charts(request, data):
     chart1 = pass_heat_one(data,0)
@@ -424,7 +457,8 @@ def render_combined_charts(request, data):
     chart12 = def_one(data,1)
     chart13 = xG_calc(data,0)
     chart14 = xG_calc(data,1)
-
+    chart15 = pass_control(data,0)
+    chart16 = pass_control(data,1)
 
     context = {
         'chart1': chart1,
@@ -440,7 +474,8 @@ def render_combined_charts(request, data):
         'chart11': chart11,  
         'chart12': chart12,  
         'chart13': chart13,  
-        'chart14': chart14,  
-
+        'chart14': chart14,
+        'chart15': chart15,
+        'chart16': chart16,  
     }
     return render(request, 'data_analysis.html', context)
