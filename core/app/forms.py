@@ -12,4 +12,11 @@ class PlayerChoiceForm(forms.Form):
         super(PlayerChoiceForm, self).__init__(*args, **kwargs)
         self.fields['player'].choices = player_choices
 
+class TeamChoiceForm(forms.Form):
+    team = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        team_choices = kwargs.pop('team_choices', [])
+        super(TeamChoiceForm, self).__init__(*args, **kwargs)
+        self.fields['team'].choices = team_choices
 

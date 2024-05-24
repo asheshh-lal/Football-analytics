@@ -22,6 +22,6 @@ from . import heatmaps, playerStats
 urlpatterns = [
     path('', views.data_return, name='data_analysis'),
     path('about/', views.about, name='about'),
-    path('heatmap/', heatmaps.data_return, name='heatmap'),
+    path('heatmap/', heatmaps.upload_team_csv, name='heatmap'),
     path('player-stats/', playerStats.upload_csv, name='playerStats'),
 ]

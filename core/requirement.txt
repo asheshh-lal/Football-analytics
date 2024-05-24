@@ -21,10 +21,7 @@ mplsoccer==1.2.4
 numpy==1.26.4
 packaging==24.0
 pandas==2.2.2
-<<<<<<< HEAD
-=======
 patsy==0.5.6
->>>>>>> feature/upload-csv
 pillow==10.3.0
 platformdirs==4.2.0
 plotly==5.21.0
@@ -40,10 +37,7 @@ six==1.16.0
 sqlparse==0.5.0
 statsbomb==0.3.0
 statsbombpy==1.13.0
-<<<<<<< HEAD
-=======
 statsmodels==0.14.2
->>>>>>> feature/upload-csv
 tenacity==8.2.3
 typeguard==4.2.1
 typing_extensions==4.11.0

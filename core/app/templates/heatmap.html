@@ -2,16 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Team: {{ team_name }}</h1>
-        <p>Teams Heatmap Analysis</p>
-        <div class="form">
-            <form method="POST">
-                {% csrf_token %}
-                <label for="team_name">Enter Team Name:</label>
-                <input type="text" id="team_name" name="team_name" value="{{ team_name }}" required>
-                <button type="submit">Generate Heatmap</button>
-            </form>
-        </div>
+        <h1>Team Heatmap Analysis</h1>
         {% if error_message %}
             <p class="error-message">{{ error_message }}</p>
         {% endif %}
