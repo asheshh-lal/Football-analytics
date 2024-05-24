@@ -322,7 +322,10 @@ def def_one(data, i):
 
     return image_base64
 
+<<<<<<< HEAD
 ## function to calculate xG using sigmoid function
+=======
+>>>>>>> feature/upload-csv
 def calculate_xG(sh, b, model_variables):
     bsum = b[0]
     for i, v in enumerate(model_variables):
@@ -408,6 +411,7 @@ def xG_calc(data, i):
 
     return image_base64
 
+<<<<<<< HEAD
 ## function to plot the shots
 def pass_control(data, i):
     # Select only the passes for the specified team
@@ -441,6 +445,9 @@ def pass_control(data, i):
     plt.close(fig)  # Close the plot to free memory
 
     return image_base64
+=======
+
+>>>>>>> feature/upload-csv
 
 def render_combined_charts(request, data):
     chart1 = pass_heat_one(data,0)
@@ -457,8 +464,12 @@ def render_combined_charts(request, data):
     chart12 = def_one(data,1)
     chart13 = xG_calc(data,0)
     chart14 = xG_calc(data,1)
+<<<<<<< HEAD
     chart15 = pass_control(data,0)
     chart16 = pass_control(data,1)
+=======
+
+>>>>>>> feature/upload-csv
 
     context = {
         'chart1': chart1,
@@ -474,8 +485,13 @@ def render_combined_charts(request, data):
         'chart11': chart11,  
         'chart12': chart12,  
         'chart13': chart13,  
+<<<<<<< HEAD
         'chart14': chart14,
         'chart15': chart15,
         'chart16': chart16,  
+=======
+        'chart14': chart14,  
+
+>>>>>>> feature/upload-csv
     }
     return render(request, 'data_analysis.html', context)
